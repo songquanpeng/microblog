@@ -8,16 +8,8 @@ import (
 
 type Nonsense struct {
 	Id      int    `json:"id"`
-	Content string `json:"filename" gorm:"type:string"`
+	Content string `json:"content" gorm:"type:string"`
 	Time    string `json:"time" gorm:"type:string"`
-}
-
-type LocalFile struct {
-	Name         string
-	Link         string
-	Size         string
-	IsFolder     bool
-	ModifiedTime string
 }
 
 var DB *gorm.DB
@@ -32,13 +24,6 @@ func InitDB() (*gorm.DB, error) {
 		log.Fatal(err)
 	}
 	return nil, err
-}
-
-func All() ([]*Nonsense, error) {
-	var nonsenses []*Nonsense
-	var err error
-	err = DB.Find(&nonsenses).Error
-	return nonsenses, err
 }
 
 func (nonsense *Nonsense) Insert() error {

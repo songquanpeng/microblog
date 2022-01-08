@@ -4,16 +4,21 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
+	"time"
 )
 
+type PostRequest struct {
+	Token   string `json:"token"`
+	Content string `json:"content"`
+}
+
 type DeleteRequest struct {
-	Id    int
-	Link  string
-	Token string
+	Id    int    `json:"id"`
+	Token string `json:"token"`
 }
 
 func GetIndex(c *gin.Context) {
-	//query := c.Query("query")
 	html, _ := fs.ReadFile("public/index.html")
 	c.Data(http.StatusOK, "text/html; charset=utf-8", html)
 }
@@ -28,17 +33,64 @@ func GetLibFile(c *gin.Context) {
 	c.FileFromFS("public/lib/"+path, http.FS(fs))
 }
 
+func GetNonsense(c *gin.Context) {
+	pStr := c.DefaultQuery("p", "0")
+	p, _ := strconv.Atoi(pStr)
+	if p < 0 {
+		p = 0
+	}
+	pageSize := 10
+	var nonsenses []*Nonsense
+	if err := DB.Limit(pageSize).Offset(p).Order("id desc").Find(&nonsenses).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  false,
+			"message": err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  true,
+			"message": "okay",
+			"data":    nonsenses,
+		})
+	}
+
+}
+
 func PostNonsense(c *gin.Context) {
-	description := c.PostForm("description")
-	if description == "" {
-		description = "No description."
+	var postRequest PostRequest
+	err := json.NewDecoder(c.Request.Body).Decode(&postRequest)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"message": "Invalid parameter",
+		})
+		return
 	}
-	uploader := c.PostForm("uploader")
-	if uploader == "" {
-		uploader = "Anonymous User"
+	if *Token == postRequest.Token {
+		nonsenseObj := &Nonsense{
+			Content: postRequest.Content,
+			Time:    time.Now().Format("2006-01-02 15:04:05"),
+		}
+		err := nonsenseObj.Insert()
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": true,
+				"message": err.Error(),
+			})
+		} else {
+			message := "Nonsense posted successfully."
+			c.JSON(http.StatusOK, gin.H{
+				"success": true,
+				"message": message,
+			})
+		}
+
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "Token is invalid.",
+		})
 	}
-	//currentTime := time.Now().Format("2006-01-02 15:04:05")
-	c.Redirect(http.StatusSeeOther, "./")
 }
 
 func DeleteNonsense(c *gin.Context) {

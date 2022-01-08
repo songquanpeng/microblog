@@ -11,6 +11,7 @@ func SetIndexRouter(router *gin.Engine) {
 }
 
 func SetApiRouter(router *gin.Engine) {
-	router.POST("/nonsense", PostNonsense)
-	router.DELETE("/nonsense", DeleteNonsense)
+	router.GET("/api/nonsense", GetNonsense)
+	router.POST("/api/nonsense", PostNonsense)
+	router.DELETE("/api/nonsense", DeleteNonsense)
 }

@@ -1,7 +1,6 @@
 let mainElement = undefined;
 let loading = false;
 let offset = 0;
-let num = 10;
 
 function render(item) {
     let itemElement = `<div class="card item">
@@ -15,28 +14,31 @@ function render(item) {
     mainElement.insertAdjacentHTML('beforeend', itemElement);
 }
 
-function loadData() {
-
+async function loadData(start) {
+    let res = await fetch(`/api/nonsense?p=${start}`);
+    let data = await res.json()
+    if (data.status) {
+        return data.data;
+    }
 }
 
-function loadMore() {
+async function loadMore() {
     if (loading) return;
     loading = true;
-    console.log(offset)
-    for (let i = 0; i < num; i++) {
-        render({content: "不，这只是你的错觉。在没有爱情的时候，你照样生活。", time: "2022-01-08 04:05"})
-    }
-    offset += num;
+    let items = await loadData(offset)
+    offset += items.length;
+    items.forEach((item) => {
+        render(item);
+    })
     loading = false;
 }
 
-function main() {
+async function main() {
     mainElement = document.getElementById('main');
-
-    loadMore();
-    window.onscroll = function () {
+    await loadMore();
+    window.onscroll = async function () {
         if (shouldLoad()) {
-            loadMore();
+            await loadMore();
         }
     }
 
