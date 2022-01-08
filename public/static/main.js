@@ -1,7 +1,7 @@
 let mainElement = undefined;
 let loading = false;
 let offset = 0;
-let token = 'token';
+let token = localStorage.getItem('token');
 
 function render(item, insertEnd = true) {
     let itemElement = `<div class="card item" id="item-${item.id}">
@@ -58,11 +58,17 @@ async function onPostBtnClicked() {
             } else {
                 render(data.data, false);
                 offset += 1;
+                window.scrollTo(0, 0);
             }
         }
     } else {
-        document.getElementById('newModalTitle').textContent = "发布失败！";
-        console.error(data);
+        if (data.message === "Invalid token.") {
+            closeModal("newModal");
+            showModal('tokenModal');
+        } else {
+            document.getElementById('newModalTitle').textContent = "发布失败！";
+            console.error(data);
+        }
     }
 }
 
@@ -98,4 +104,12 @@ async function main() {
 
 function shouldLoad() {
     return (window.innerHeight + window.scrollY + 5) >= document.body.offsetHeight
+}
+
+
+function updateToken() {
+    token = document.getElementById('tokenInput').value;
+    token = token.trim();
+    localStorage.setItem('token', token);
+    closeModal('tokenModal');
 }

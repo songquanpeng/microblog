@@ -23,7 +23,7 @@
     <footer class="footer" style="background-color: white">
         <div class="content has-text-centered">
             <p>
-                <a href="https://github.com/songquanpeng/go-nonsense">废话胶囊</a> 由 <a
+                <a href="https://github.com/songquanpeng/go-nonsense">Go Nonsense</a> 由 <a
                     href="https://github.com/songquanpeng">JustSong</a> 构建，源代码遵循
                 <a href="https://opensource.org/licenses/mit-license.php">MIT</a> 协议
             </p>
@@ -41,7 +41,7 @@
     <div class="modal-content">
         <div class="box">
             <h3 class="title is-5" id="newModalTitle">新的废话</h3>
-            <textarea class="textarea is-light" placeholder="" id="editor" style="margin-bottom: 10px"></textarea>
+            <textarea class="textarea is-light" placeholder="使用命令 delete id 来删除废话" id="editor" style="margin-bottom: 10px"></textarea>
             <div class="field is-grouped is-grouped-right">
                 <div class="control">
                     <button class="button is-light" onclick="onPostBtnClicked()">发布</button>
@@ -53,6 +53,31 @@
         </div>
     </div>
 </div>
+<div class="modal" id="tokenModal">
+    <div class="modal-background" onclick="closeModal('tokenModal')"></div>
+    <div class="modal-content">
+        <div class="box">
+            <div>
+                <div class="field">
+                    <label class="label">请输入身份验证令牌：</label>
+                    <div class="control">
+                        <input id='tokenInput' class="input" type="text"
+                               placeholder="用于身份验证">
+                    </div>
+                </div>
+            </div>
+            <div class="field is-grouped is-grouped-right" style="margin-top: 8px">
+                <div class="control">
+                    <button class="button is-light" onclick="updateToken()">提交</button>
+                </div>
+                <div class="control">
+                    <button class="button is-light" onclick="closeModal('tokenModal')">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 </body>
 </html>

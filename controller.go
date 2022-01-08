@@ -134,7 +134,7 @@ func PostNonsense(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": "Token is invalid.",
+			"message": "Invalid token.",
 		})
 	}
 }
@@ -171,7 +171,7 @@ func DeleteNonsense(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": "Token is invalid.",
+			"message": "Invalid token.",
 		})
 	}
 }
