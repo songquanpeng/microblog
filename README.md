@@ -17,6 +17,10 @@
 
 例如删除 id 为 34 的废话：`delete 34`。
 
+## 在线示例
+我自己的部署版本：https://nonsense.justsong.cn/
+Heroku 试用版本（token 就是 token）：https://go-nonsense.herokuapp.com/
+
 ## 其他
 
 创意参考：https://github.com/daibor/nonsense.fun
