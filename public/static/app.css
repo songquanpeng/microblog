@@ -124,4 +124,28 @@ time {
     font-weight: 200;
     color: #bbb;
     font-family: Verdana, Candara, Arial, Helvetica, Microsoft YaHei, sans-serif;
+    display: inline-block;
+}
+
+.id-tag {
+    font-weight: 200;
+    color: #bbb;
+    font-family: Verdana, Candara, Arial, Helvetica, Microsoft YaHei, sans-serif;
+    display: inline-block;
+    float: right;
+}
+
+
+#newBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    z-index: 99;
+    border: none;
+    outline: none;
+    background-color: #fff;
+    color: #4a4a4a;
+    cursor: pointer;
+    height: 50px;
+    width: 50px;
 }

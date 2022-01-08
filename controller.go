@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -31,6 +32,25 @@ func GetStaticFile(c *gin.Context) {
 func GetLibFile(c *gin.Context) {
 	path := c.Param("file")
 	c.FileFromFS("public/lib/"+path, http.FS(fs))
+}
+
+func GetNonsenseById(c *gin.Context) {
+	idStr := c.Param("id")
+	id, _ := strconv.Atoi(idStr)
+	var nonsense Nonsense
+	if err := DB.First(&nonsense, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"message": "okay",
+			"data":    nonsense,
+		})
+	}
+
 }
 
 func GetNonsense(c *gin.Context) {
@@ -67,6 +87,31 @@ func PostNonsense(c *gin.Context) {
 		return
 	}
 	if *Token == postRequest.Token {
+		// enable user to delete nonsense by type `delete id`
+		if strings.HasPrefix(postRequest.Content, "delete ") {
+			t := strings.Split(postRequest.Content, " ")
+			idStr := t[len(t)-1]
+			id, err := strconv.Atoi(idStr)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"success": false,
+					"message": "Invalid parameter",
+				})
+				return
+			} else {
+				var nonsenseObj Nonsense
+				DB.Where("id = ?", id).First(&nonsenseObj)
+				err := nonsenseObj.Delete()
+				if err != nil {
+					c.JSON(http.StatusBadRequest, gin.H{
+						"success": false,
+						"message": "Failed to delete",
+					})
+					return
+				}
+			}
+		}
+
 		nonsenseObj := &Nonsense{
 			Content: postRequest.Content,
 			Time:    time.Now().Format("2006-01-02 15:04:05"),
@@ -82,6 +127,7 @@ func PostNonsense(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{
 				"success": true,
 				"message": message,
+				"data":    nonsenseObj.Id,
 			})
 		}
 
@@ -104,11 +150,11 @@ func DeleteNonsense(c *gin.Context) {
 		return
 	}
 	if *Token == deleteRequest.Token {
-		fileObj := &Nonsense{
+		nonsenseObj := &Nonsense{
 			Id: deleteRequest.Id,
 		}
-		DB.Where("id = ?", deleteRequest.Id).First(&fileObj)
-		err := fileObj.Delete()
+		DB.Where("id = ?", deleteRequest.Id).First(&nonsenseObj)
+		err := nonsenseObj.Delete()
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"success": true,
