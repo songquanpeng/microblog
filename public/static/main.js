@@ -1,130 +1,47 @@
-function showUploadModal() {
-    document.getElementById('uploaderNameInput').value = localStorage.getItem('uploaderName');
-    showModal('uploadModal');
+let mainElement = undefined;
+let loading = false;
+let offset = 0;
+let num = 10;
+
+function render(item) {
+    let itemElement = `<div class="card item">
+            <div class="card-content">
+                <div class="content">
+                    <p class="text">${item.content}</p>
+                    <time>${item.time}</time>
+                </div>
+            </div>
+        </div>`;
+    mainElement.insertAdjacentHTML('beforeend', itemElement);
 }
 
-function closeUploadModal() {
-    document.getElementById('uploadModal').className = "modal";
+function loadData() {
+
 }
 
-
-function showModal(id) {
-    document.getElementById(id).className = "modal is-active";
-}
-
-function closeModal(id) {
-    document.getElementById(id).className = "modal";
-}
-
-function onChooseBtnClicked(e) {
-    document.getElementById('fileInput').click();
-    e.preventDefault();
-}
-
-function deleteFile(id, link) {
-    let token = localStorage.getItem('token');
-    if (!token) {
-        token = askUserInputToken();
-        if (token) {
-            deleteFile(id, link);
-        }
-    } else {
-        fetch("/delete", {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: id,
-                link: link,
-                token: token
-            })
-        }).then(function (res) {
-            res.json().then(function (data) {
-                // showMessage(data.message);
-                if (!data.success) {
-                    console.error(data.message);
-                    showMessage(data.message, true);
-                    localStorage.removeItem('token');
-                    askUserInputToken();
-                } else {
-                    document.getElementById("file-" + id).style.display = 'none';
-                }
-            })
-        });
+function loadMore() {
+    if (loading) return;
+    loading = true;
+    console.log(offset)
+    for (let i = 0; i < num; i++) {
+        render({content: "不，这只是你的错觉。在没有爱情的时候，你照样生活。", time: "2022-01-08 04:05"})
     }
+    offset += num;
+    loading = false;
 }
 
+function main() {
+    mainElement = document.getElementById('main');
 
-function onFileInputChange() {
-    let prompt = "";
-    let files = document.getElementById('fileInput').files;
-    if (files.length === 1) {
-        prompt = 'Selected file: ' + files[0].name;
-    } else {
-        prompt = files.length + " files selected";
-    }
-    document.getElementById('uploadFileDialogTitle').innerText = prompt;
-}
-
-
-function updateToken() {
-    let token = document.getElementById('tokenInput').value;
-    token = token.trim();
-    localStorage.setItem('token', token);
-    closeModal('tokenModal');
-}
-
-function askUserInputToken() {
-    showModal('tokenModal');
-}
-
-function onUploaderNameChange() {
-    localStorage.setItem('uploaderName', document.getElementById('uploaderNameInput').value);
-}
-
-function showMessage(message, isError = false) {
-    const messageToast = document.getElementById('messageToast');
-    messageToast.style.display = 'block';
-    messageToast.className = isError ? "message is-danger" : "message";
-    let timeout = isError ? 5000 : 2000;
-    document.getElementById('messageToastText').innerText = message;
-    setTimeout(function () {
-        messageToast.style.display = 'none';
-    }, timeout);
-}
-
-function showQRCode(link) {
-    let url = window.location.origin + link;
-    url = encodeURI(url)
-    console.log(url)
-    let qr = new QRious({
-        element: document.getElementById('qrcode'),
-        value: url,
-        size: 200,
-    });
-    showModal('qrcodeModal');
-}
-
-function toLocalTime(str) {
-    let date = Date.parse(str);
-    return date.toLocaleString()
-}
-
-function init() {
-    document.addEventListener('DOMContentLoaded', () => {
-        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-        if ($navbarBurgers.length > 0) {
-            $navbarBurgers.forEach(el => {
-                el.addEventListener('click', () => {
-                    const target = el.dataset.target;
-                    const $target = document.getElementById(target);
-                    el.classList.toggle('is-active');
-                    $target.classList.toggle('is-active');
-                });
-            });
+    loadMore();
+    window.onscroll = function () {
+        if (shouldLoad()) {
+            loadMore();
         }
-    });
+    }
+
 }
 
-init();
+function shouldLoad() {
+    return (window.innerHeight + window.scrollY + 5) >= document.body.offsetHeight
+}

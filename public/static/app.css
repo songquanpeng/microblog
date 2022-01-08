@@ -9,17 +9,17 @@ nav {
 }
 
 a {
-    color: #368CCB;
+    color: #4a4a4a;
     text-decoration: none;
 }
 
 a:hover {
-    color: #368CCB;
+    color: #4a4a4a;
     text-decoration: none;
 }
 
 .navbar-item:hover {
-    color: #368CCB;
+    color: #4a4a4a;
 }
 
 .wrapper {
@@ -98,72 +98,30 @@ img {
 
 .normal-container {
     margin: auto;
-    max-width: 1200px;
-    padding: 16px 16px;
-    overflow-wrap: break-word;
-    word-break: break-word;
-}
-
-.narrow-container {
-    margin: auto;
     max-width: 560px;
     padding: 16px 16px;
     overflow-wrap: break-word;
     word-break: break-word;
-    line-height: 1.6;
+}
+
+.item {
+    background: #fff;
+    padding: 10px 20px;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    border-top: 6px solid;
+}
+
+.text {
+    font-style: normal;
     font-size: larger;
+    line-height: 1.8rem;
+    text-align: justify;
+    font-family: Verdana, Candara, Arial, Helvetica, Microsoft YaHei, sans-serif;
 }
 
-.info {
-    font-size: 14px;
-    line-height: 28px;
-    text-align: left;
-    color: #738292;
-    margin-bottom: 3em
-}
-
-.info a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.links {
-    margin: 16px;
-}
-
-span.line {
-    display: inline-block;
-}
-
-.actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 8px;
-}
-
-.actions span, .actions a {
-    margin-left: 16px;
-}
-
-.actions span {
-    cursor: pointer;
-}
-
-.files-table {
-    min-width: 960px;
-    overflow-x: scroll;
-}
-
-#searchInput:focus {
-    border: 1px #b5b5b5;
-    box-shadow: 0 0 5px #b5b5b5;
-}
-
-.folder-link {
-    font-weight: bolder;
-    color: #0a0a0a;
-}
-
-.file-link {
-    color: #0a0a0a;
+time {
+    font-weight: 200;
+    color: #bbb;
+    font-family: Verdana, Candara, Arial, Helvetica, Microsoft YaHei, sans-serif;
 }
