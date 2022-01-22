@@ -9,12 +9,14 @@ nav {
 }
 
 a {
-    color: #4a4a4a;
+    /*color: #4a4a4a;*/
+    color: #2E75B5;
     text-decoration: none;
 }
 
 a:hover {
-    color: #4a4a4a;
+    /*color: #4a4a4a;*/
+    color: #2E75B5;
     text-decoration: none;
 }
 
@@ -116,7 +118,7 @@ img {
     font-style: normal;
     font-size: larger;
     line-height: 1.8rem;
-    text-align: justify;
+    /*text-align: justify;*/
     font-family: Verdana, Candara, Arial, Helvetica, Microsoft YaHei, sans-serif;
 }
 
