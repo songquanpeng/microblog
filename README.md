@@ -2,6 +2,9 @@
 > 基于 Go 的单可执行文件「微型博客」实现，一个供你闲言碎语的地方
 
 ## 部署教程
+两个选择：
+1. 从 GitHub 上下载我编译好的：`wget https://github.com/songquanpeng/microblog/releases/latest/download/microblog`，
+2. 或者是自行编译：`go build -ldflags "-s -w"`
 
 仅单可执行文件，启动命令：
 
