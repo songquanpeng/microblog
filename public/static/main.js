@@ -2,6 +2,23 @@ let mainElement = undefined;
 let loading = false;
 let offset = 0;
 let token = localStorage.getItem('token');
+let colorList = [
+    "#0074D9", "#7FDBFF", "#39CCCC", "#B10DC9", "#F012BE",
+    "#FF4136", "#FF851B", "#2ECC40", "#01FF70"
+];
+
+function text2color(text) {
+    let color = "#111111";
+    if (text.length !== 0) {
+        let firstChar = text[0];
+        let n = firstChar.charCodeAt(0);
+        if (!isNaN(n)) {
+            let idx = n % colorList.length;
+            color = colorList[idx];
+        }
+    }
+    return color;
+}
 
 function render(item, insertEnd = true) {
     item.content = parseLink(item.content);
