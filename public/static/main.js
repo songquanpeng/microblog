@@ -4,6 +4,7 @@ let offset = 0;
 let token = localStorage.getItem('token');
 
 function render(item, insertEnd = true) {
+    item.content = parseLink(item.content);
     let itemElement = `<div class="card item" id="item-${item.id}">
             <div class="card-content">
                 <div class="content">
@@ -19,6 +20,12 @@ function render(item, insertEnd = true) {
         mainElement.insertAdjacentHTML('afterbegin', itemElement);
     }
 
+}
+
+function parseLink(text) {
+    let urlPattern = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+    text = text.replace(urlPattern, '<a href="$1" target="_blank">$1</a>');
+    return text
 }
 
 function showModal(id) {
