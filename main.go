@@ -10,15 +10,20 @@ import (
 )
 
 var (
-	port  = flag.Int("port", 3000, "specify the server listening port.")
-	Token = flag.String("token", "token", "specify the private token.")
+	port  = flag.Int("port", 3000, "the listening port")
+	Token = flag.String("token", "", "token for authentication")
 )
 
 //go:embed public
 var fs embed.FS
 
 func init() {
-
+	if *Token == "" {
+		*Token = os.Getenv("TOKEN")
+		if *Token == "" {
+			*Token = "123456"
+		}
+	}
 }
 
 func main() {

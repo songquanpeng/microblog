@@ -15,7 +15,7 @@ type Nonsense struct {
 var DB *gorm.DB
 
 func InitDB() (*gorm.DB, error) {
-	db, err := gorm.Open("sqlite3", "./.microblog.db")
+	db, err := gorm.Open("sqlite3", "microblog.db")
 	if err == nil {
 		DB = db
 		db.AutoMigrate(&Nonsense{})
