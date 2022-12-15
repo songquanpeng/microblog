@@ -1,28 +1,38 @@
 package main
 
 import (
-	"embed"
 	"flag"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"log"
+	"microblog/common"
+	"microblog/model"
+	"microblog/router"
 	"os"
 	"strconv"
 )
 
 var (
-	port  = flag.Int("port", 3000, "the listening port")
-	Token = flag.String("token", "", "token for authentication")
+	port     = flag.Int("port", 3000, "the listening port")
+	username = flag.String("username", "admin", "username for authentication")
+	password = flag.String("password", "123456", "password for authentication")
 )
 
-//go:embed public
-var fs embed.FS
-
 func init() {
-	if *Token == "" {
-		*Token = os.Getenv("TOKEN")
-		if *Token == "" {
-			*Token = "123456"
-		}
+	//if os.Getenv("USERNAME") != "" {
+	//	*username = os.Getenv("USERNAME")
+	//}
+	common.Username = *username
+	if os.Getenv("PASSWORD") != "" {
+		*password = os.Getenv("PASSWORD")
+	}
+	common.Password = *password
+	if os.Getenv("SESSION_SECRET") != "" {
+		common.SessionSecret = os.Getenv("SESSION_SECRET")
+	}
+	if os.Getenv("SQLITE_PATH") != "" {
+		common.SQLitePath = os.Getenv("SQLITE_PATH")
 	}
 }
 
@@ -31,15 +41,20 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	flag.Parse()
-
-	db, err := InitDB()
+	err := model.InitDB()
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	defer func() {
+		err := model.CloseDB()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 	server := gin.Default()
-	SetIndexRouter(server)
-	SetApiRouter(server)
+	store := cookie.NewStore([]byte(common.SessionSecret))
+	server.Use(sessions.Sessions("session", store))
+	router.SetRouter(server)
 	var realPort = os.Getenv("PORT")
 	if realPort == "" {
 		realPort = strconv.Itoa(*port)
