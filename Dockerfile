@@ -11,6 +11,10 @@ RUN go build -ldflags "-s -w -extldflags '-static'" -o microblog
 
 FROM alpine
 
+RUN apk update \
+    && apk upgrade \
+    && apk add --no-cache ca-certificates tzdata \
+    && update-ca-certificates 2>/dev/null || true
 ENV PORT=3000
 COPY --from=builder /build/microblog /
 EXPOSE 3000
