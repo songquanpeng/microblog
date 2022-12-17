@@ -5,6 +5,6 @@ import (
 )
 
 func SetRouter(router *gin.Engine) {
-	setWebRouter(router)
 	setApiRouter(router)
+	setWebRouter(router)
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"flag"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -17,15 +18,19 @@ var (
 	port     = flag.Int("port", 3000, "the listening port")
 	username = flag.String("username", "admin", "username for authentication")
 	password = flag.String("password", "123456", "password for authentication")
+	theme    = flag.String("theme", "default", "which theme to use, available value: default")
 )
 
+//go:embed theme
+var FS embed.FS
+
 func init() {
-	//if os.Getenv("USERNAME") != "" {
-	//	*username = os.Getenv("USERNAME")
-	//}
+	if os.Getenv("MB_USERNAME") != "" {
+		*username = os.Getenv("MB_USERNAME")
+	}
 	common.Username = *username
-	if os.Getenv("PASSWORD") != "" {
-		*password = os.Getenv("PASSWORD")
+	if os.Getenv("MB_PASSWORD") != "" {
+		*password = os.Getenv("MB_PASSWORD")
 	}
 	common.Password = *password
 	if os.Getenv("SESSION_SECRET") != "" {
@@ -34,6 +39,13 @@ func init() {
 	if os.Getenv("SQLITE_PATH") != "" {
 		common.SQLitePath = os.Getenv("SQLITE_PATH")
 	}
+	if common.Theme == "default" {
+		if os.Getenv("MB_THEME") != "" {
+			common.Theme = os.Getenv("MB_THEME")
+		}
+	}
+	common.Theme = *theme
+	common.FS = FS
 }
 
 func main() {

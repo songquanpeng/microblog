@@ -1,12 +1,17 @@
 package router
 
 import (
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
-	"microblog/controller"
+	"microblog/common"
+	"microblog/middleware"
+	"net/http"
 )
 
 func setWebRouter(router *gin.Engine) {
-	router.GET("/public/static/:file", controller.GetStaticFile)
-	router.GET("/public/lib/:file", controller.GetLibFile)
-	router.GET("/", controller.GetIndex)
+	router.Use(middleware.Cache())
+	router.Use(static.Serve("/", common.EmbedFolder(common.FS, "theme/"+common.Theme)))
+	router.NoRoute(func(c *gin.Context) {
+		c.Status(http.StatusNotFound)
+	})
 }
