@@ -42,4 +42,5 @@
 我自己的部署版本：https://nonsense.justsong.cn
 
 ## 其他
-创意参考：https://github.com/daibor/nonsense.fun
+1. 创意参考：https://github.com/daibor/nonsense.fun
+2. `v0.1` 版本升级 `v0.2` 版本请使用此[数据库迁移脚本](./bin/migration-v0.1-v0.2.py)。
