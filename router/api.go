@@ -8,6 +8,7 @@ import (
 
 func setApiRouter(router *gin.Engine) {
 	router.Use(middleware.ApiAuth())
+	router.GET("/status", controller.Status)
 	router.POST("/login", controller.Login)
 	router.GET("/logout", controller.Logout)
 	router.GET("/api/post", controller.GetAllPosts)
