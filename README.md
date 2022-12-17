@@ -32,7 +32,7 @@
 ## 主题设置
 你可以通过设置 `theme` 命令行参数或者 `MB_THEME` 环境变量来切换主题。
 
-目前可用的内置主题有 `default`。
+目前可用的内置主题有 `default` & [`chiperman`](https://github.com/songquanpeng/microblog-theme-chiperman)。
 
 如果要使用第三方主题，只需要设置 `theme` 命令行参数或者 `MB_THEME` 环境变量为主题的路径即可。
 

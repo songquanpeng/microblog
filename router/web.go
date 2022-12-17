@@ -10,7 +10,7 @@ import (
 
 func setWebRouter(router *gin.Engine) {
 	router.Use(middleware.Cache())
-	if common.Theme == "default" {
+	if common.Theme == "default" || common.Theme == "chiperman" {
 		// using built in themes
 		router.Use(static.Serve("/", common.EmbedFolder(common.FS, "theme/"+common.Theme)))
 	} else {
