@@ -1,0 +1,3 @@
+[submodule "theme/chiperman"]
+	path = theme/chiperman
+	url = git@github.com:songquanpeng/microblog-theme-chiperman.git
