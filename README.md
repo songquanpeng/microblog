@@ -29,6 +29,21 @@
 
 更加详细的部署教程[参见此处](https://iamazing.cn/page/how-to-deploy-a-website)。
 
+## 主题设置
+你可以通过设置 `theme` 命令行参数或者 `MB_THEME` 环境变量来切换主题。
+
+目前可用的内置主题有 `default`。
+
+如果要使用第三方主题，只需要设置 `theme` 命令行参数或者 `MB_THEME` 环境变量为主题的路径即可。
+
+例如：`./microblog --theme ./path/to/theme`。
+
+注意，路径的第一个字母必须是 `.` 或者 `/`。
+
+如果想要自行开发主题，请参考 [theme/default](./theme/default)，你可以自行复制一份，然后修改 `index.html` 以及 `app.css` 即可。
+
+欢迎提交 PR 将你的自定义主题 merge 到本项目。
+
 ## 使用教程
 点击右下角的加号按钮可以发布微博，在输入框中输入 `delete id` 可以删除指定 id 的微博，微博的 id 可以在对应卡片的右下角找到。
 
