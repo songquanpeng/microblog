@@ -73,11 +73,11 @@ function timestamp2time(timestamp) {
 }
 
 function render(item, insertEnd = true) {
-    item.content = parseLink(item.content);
+    item.content = marked.parse(item.content);
     let itemElement = `<div class="card item" id="item-${item.id}">
             <div class="card-content">
                 <div class="content">
-                    <p class="text">${item.content}</p>
+                    <div class="markdown">${item.content}</div>
                     <time>${timestamp2time(item.timestamp * 1000)}</time>
                     <p class="id-tag">#${item.id}</p>
                 </div>

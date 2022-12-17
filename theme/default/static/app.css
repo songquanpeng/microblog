@@ -114,12 +114,13 @@ img {
     border-top: 6px solid;
 }
 
-.text {
+.markdown {
     font-style: normal;
     font-size: larger;
     line-height: 1.8rem;
     /*text-align: justify;*/
     font-family: Verdana, Candara, Arial, Helvetica, Microsoft YaHei, sans-serif;
+    margin-bottom: 1em;
 }
 
 time {
