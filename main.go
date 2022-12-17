@@ -34,18 +34,16 @@ func init() {
 		*password = os.Getenv("MB_PASSWORD")
 	}
 	common.Password = *password
+	if os.Getenv("MB_THEME") != "" {
+		*theme = os.Getenv("MB_THEME")
+	}
+	common.Theme = *theme
 	if os.Getenv("SESSION_SECRET") != "" {
 		common.SessionSecret = os.Getenv("SESSION_SECRET")
 	}
 	if os.Getenv("SQLITE_PATH") != "" {
 		common.SQLitePath = os.Getenv("SQLITE_PATH")
 	}
-	if common.Theme == "default" {
-		if os.Getenv("MB_THEME") != "" {
-			common.Theme = os.Getenv("MB_THEME")
-		}
-	}
-	common.Theme = *theme
 	common.FS = FS
 }
 
