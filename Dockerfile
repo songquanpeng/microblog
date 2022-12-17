@@ -7,7 +7,7 @@ ENV GO111MODULE=on \
 WORKDIR /build
 COPY . .
 RUN go mod download
-RUN go build -ldflags "-s -w 'microblog/common.Version=$(cat VERSION)' -extldflags '-static'" -o microblog
+RUN go build -ldflags "-s -w -X 'microblog/common.Version=$(cat VERSION)' -extldflags '-static'" -o microblog
 
 FROM alpine
 
