@@ -7,13 +7,19 @@ import (
 )
 
 func setApiRouter(router *gin.Engine) {
-	router.Use(middleware.ApiAuth())
-	router.GET("/status", controller.Status)
-	router.POST("/login", controller.Login)
-	router.GET("/logout", controller.Logout)
-	router.GET("/api/post", controller.GetAllPosts)
-	router.GET("/api/post/:id", controller.GetPost)
-	router.POST("/api/post", middleware.AuthRequired(), controller.CreatePost)
-	router.PUT("/api/post/:id", middleware.AuthRequired(), controller.UpdatePost)
-	router.DELETE("/api/post/:id", middleware.AuthRequired(), controller.DeletePost)
+	apiRouter := router.Group("/api")
+	apiRouter.Use(middleware.ApiAuth())
+	{
+		apiRouter.GET("/status", controller.Status)
+		apiRouter.POST("/login", controller.Login)
+		apiRouter.GET("/logout", controller.Logout)
+		postRouter := apiRouter.Group("/post")
+		{
+			postRouter.GET("/", controller.GetAllPosts)
+			postRouter.GET("/:id", controller.GetPost)
+			postRouter.POST("/", middleware.AuthRequired(), controller.CreatePost)
+			postRouter.PUT("/:id", middleware.AuthRequired(), controller.UpdatePost)
+			postRouter.DELETE("/:id", middleware.AuthRequired(), controller.DeletePost)
+		}
+	}
 }

@@ -13,14 +13,6 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
-func Status(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "",
-		"success": true,
-		"data":    c.GetBool("authed"),
-	})
-}
-
 func Login(c *gin.Context) {
 	var loginRequest LoginRequest
 	err := json.NewDecoder(c.Request.Body).Decode(&loginRequest)
