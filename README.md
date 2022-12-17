@@ -1,5 +1,5 @@
 # 微博客
-> 基于 Go 的单可执行文件「微博客」实现，一个供你闲言碎语的地方
+> 基于 Go 的个人微博客，一个供你闲言碎语的地方
 
 ## 部署教程
 ### 基于 Docker 进行部署
@@ -23,7 +23,7 @@
    ```
 3. 访问 [http://localhost:3000/](http://localhost:3000/) 即可开始使用，默认用户名为 `admin`，密码为 `123456`。
 
-其中 `port` 即服务的端口号，`token` 即用于身份验证的令牌。
+其中 `port` 即服务的端口号，`username` 和 `password` 即用于身份验证的用户名和密码。
 
 可以使用 `pm2` 来进行进程守护：`pm2 start ./microblog --name microblog -- --port 3000 --username admin --password 123456`
 
@@ -37,6 +37,8 @@
 如果用户未登录，则会首先弹出登录框，用户名和密码是你在环境变量或者命令行参数中设置的值。
 
 支持 Markdown。
+
+由于微博客本身简洁的设计，你可以将其使用 `iframe` 嵌入到你的主博客里面，例如：https://iamazing.cn/page/nonsense
 
 ## 在线示例
 我自己的部署版本：https://nonsense.justsong.cn
