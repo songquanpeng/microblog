@@ -10,12 +10,12 @@ import (
 
 func setWebRouter(router *gin.Engine) {
 	router.Use(middleware.Cache())
-	if common.Theme[0] == '.' || common.Theme[0] == '/' {
-		// using third party themes
-		router.Use(static.Serve("/", static.LocalFile(common.Theme, true)))
-	} else {
+	if common.Theme == "default" {
 		// using built in themes
 		router.Use(static.Serve("/", common.EmbedFolder(common.FS, "theme/"+common.Theme)))
+	} else {
+		// using third party themes
+		router.Use(static.Serve("/", static.LocalFile(common.Theme, true)))
 	}
 	router.NoRoute(func(c *gin.Context) {
 		c.Status(http.StatusNotFound)

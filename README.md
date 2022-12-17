@@ -38,8 +38,6 @@
 
 例如：`./microblog --theme ./path/to/theme`。
 
-注意，路径的第一个字母必须是 `.` 或者 `/`。
-
 如果想要自行开发主题，请参考 [theme/default](./theme/default)，你可以自行复制一份，然后修改 `index.html` 以及 `app.css` 即可。
 
 欢迎提交 PR 将你的自定义主题 merge 到本项目。
