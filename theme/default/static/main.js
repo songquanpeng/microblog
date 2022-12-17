@@ -2,10 +2,35 @@ let mainElement = undefined;
 let loading = false;
 let offset = 0;
 let token = localStorage.getItem('token');
+let status = {
+    authed: false,
+    version: "v0.0.0",
+    author: ""
+};
+
 let colorList = [
     "#0074D9", "#7FDBFF", "#39CCCC", "#B10DC9", "#F012BE",
     "#FF4136", "#FF851B", "#2ECC40", "#01FF70"
 ];
+
+async function main() {
+    mainElement = document.getElementById('main');
+    await loadMore();
+    status = await loadStatus();
+    window.onscroll = async function () {
+        if (shouldLoad()) {
+            await loadMore();
+        }
+    }
+}
+
+function onNewBtnClicked() {
+    if (status.authed) {
+        showModal('newModal');
+    } else {
+        showModal('authModal');
+    }
+}
 
 function text2color(text) {
     let color = "#111111";
@@ -20,13 +45,40 @@ function text2color(text) {
     return color;
 }
 
+
+function timestamp2time(timestamp) {
+    let time = new Date(timestamp);
+    let year = time.getFullYear().toString();
+    let month = (time.getMonth() + 1).toString();
+    let day = time.getDate().toString();
+    let hour = time.getHours().toString();
+    let minute = time.getMinutes().toString();
+    let second = time.getSeconds().toString();
+    if (month.length === 1) {
+        month = "0" + month;
+    }
+    if (day.length === 1) {
+        day = "0" + day;
+    }
+    if (hour.length === 1) {
+        hour = "0" + hour;
+    }
+    if (minute.length === 1) {
+        minute = "0" + minute;
+    }
+    if (second.length === 1) {
+        second = "0" + second;
+    }
+    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+}
+
 function render(item, insertEnd = true) {
     item.content = parseLink(item.content);
     let itemElement = `<div class="card item" id="item-${item.id}">
             <div class="card-content">
                 <div class="content">
                     <p class="text">${item.content}</p>
-                    <time>${item.time}</time>
+                    <time>${timestamp2time(item.timestamp * 1000)}</time>
                     <p class="id-tag">#${item.id}</p>
                 </div>
             </div>
@@ -36,7 +88,6 @@ function render(item, insertEnd = true) {
     } else {
         mainElement.insertAdjacentHTML('afterbegin', itemElement);
     }
-
 }
 
 function parseLink(text) {
@@ -53,54 +104,67 @@ function closeModal(id) {
     document.getElementById(id).className = "modal";
 }
 
-async function onPostBtnClicked() {
-    closeModal("newModal");
+async function deletePost(id) {
+    let res = await fetch(`/api/post/${id}`, {
+        method: 'DELETE',
+    });
+    return await res.json();
+}
+
+async function onSubmitBtnClicked() {
     let content = document.getElementById('editor').value;
-    let res = await fetch(`/api/nonsense`, {
+    if (content.startsWith("delete #")) {
+        let t = content.split('#');
+        let id = t[t.length - 1];
+        let data = await deletePost(id);
+        if (data.success) {
+            document.getElementById(`item-${id}`).style.display = 'none';
+            closeModal("newModal");
+        } else {
+            document.getElementById('newModalTitle').textContent = "删除失败：" + data.message;
+            console.error(data);
+        }
+        return;
+    }
+    let res = await fetch(`/api/post`, {
         method: 'POST',
         body: JSON.stringify({
             'content': content,
-            'token': token
         })
     });
-    let isDeletePost = content.startsWith('delete ');
-    let deletePostId = undefined;
-    if (isDeletePost) {
-        let t = content.split(' ');
-        deletePostId = t[t.length - 1];
-    }
     let data = await res.json();
     let id = data.data;
     if (data.success) {
         closeModal("newModal");
         document.getElementById('editor').value = "";
-        let res = await fetch(`/api/nonsense/${id}`);
+        let res = await fetch(`/api/post/${id}`);
         let data = await res.json();
         if (data.success) {
-            if (isDeletePost) {
-                document.getElementById(`item-${deletePostId}`).style.display = 'none';
-            } else {
-                render(data.data, false);
-                offset += 1;
-                window.scrollTo(0, 0);
-            }
+            render(data.data, false);
+            offset += 1;
+            window.scrollTo(0, 0);
         }
     } else {
-        if (data.message === "Invalid token.") {
-            closeModal("newModal");
-            showModal('tokenModal');
-        } else {
-            document.getElementById('newModalTitle').textContent = "发布失败！";
-            console.error(data);
-        }
+        document.getElementById('newModalTitle').textContent = "发布失败：" + data.message;
+        console.error(data);
+    }
+}
+
+async function loadStatus() {
+    let res = await fetch(`/api/status`);
+    let data = await res.json()
+    if (data.success) {
+        return data.data;
     }
 }
 
 async function loadData(start) {
-    let res = await fetch(`/api/nonsense?p=${start}`);
+    let res = await fetch(`/api/post/?p=${start}`);
     let data = await res.json()
-    if (data.status) {
+    if (data.success) {
         return data.data;
+    } else {
+        return [];
     }
 }
 
@@ -115,25 +179,30 @@ async function loadMore() {
     loading = false;
 }
 
-async function main() {
-    mainElement = document.getElementById('main');
-    await loadMore();
-    window.onscroll = async function () {
-        if (shouldLoad()) {
-            await loadMore();
-        }
-    }
-
-}
-
 function shouldLoad() {
     return (window.innerHeight + window.scrollY + 5) >= document.body.offsetHeight
 }
 
-
-function updateToken() {
-    token = document.getElementById('tokenInput').value;
-    token = token.trim();
-    localStorage.setItem('token', token);
-    closeModal('tokenModal');
+async function login() {
+    let username = document.getElementById('usernameInput').value.trim();
+    let password = document.getElementById('passwordInput').value.trim();
+    if (username === "" || password === "") {
+        return
+    }
+    let res = await fetch(`/api/login`, {
+        method: 'POST',
+        body: JSON.stringify({
+            username,
+            password
+        })
+    });
+    let data = await res.json();
+    if (data.success) {
+        status.authed = true;
+        closeModal('authModal');
+        showModal('newModal');
+        document.getElementById('authModalTitle').innerText = "用户登录";
+    } else {
+        document.getElementById('authModalTitle').innerText = "登录失败：" + data.message;
+    }
 }
