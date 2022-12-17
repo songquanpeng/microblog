@@ -25,6 +25,7 @@ var (
 var FS embed.FS
 
 func init() {
+	flag.Parse()
 	if os.Getenv("MB_USERNAME") != "" {
 		*username = os.Getenv("MB_USERNAME")
 	}
@@ -52,7 +53,6 @@ func main() {
 	if os.Getenv("GIN_MODE") != "debug" {
 		gin.SetMode(gin.ReleaseMode)
 	}
-	flag.Parse()
 	err := model.InitDB()
 	if err != nil {
 		log.Fatal(err)

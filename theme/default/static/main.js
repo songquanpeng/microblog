@@ -112,13 +112,15 @@ async function deletePost(id) {
 }
 
 async function onSubmitBtnClicked() {
-    let content = document.getElementById('editor').value;
-    if (content.startsWith("delete #")) {
-        let t = content.split('#');
+    let content = document.getElementById('editor').value.trim();
+    if (content.startsWith("delete ")) {
+        let t = content.split(' ');
         let id = t[t.length - 1];
         let data = await deletePost(id);
         if (data.success) {
-            document.getElementById(`item-${id}`).style.display = 'none';
+            if (document.getElementById(`item-${id}`)) {
+                document.getElementById(`item-${id}`).style.display = 'none';
+            }
             closeModal("newModal");
         } else {
             document.getElementById('newModalTitle').textContent = "删除失败：" + data.message;
