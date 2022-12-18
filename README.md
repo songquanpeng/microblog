@@ -40,7 +40,7 @@
 
 如果想要自行开发主题，请参考 [theme/default](./theme/default)，你可以自行复制一份，然后修改 `index.html` 以及 `app.css` 即可。
 
-欢迎提交 PR 将你的自定义主题 merge 到本项目。
+欢迎提交 PR 将你的自定义主题 merge 到本项目（以 submodule 的形式）。
 
 ## 使用教程
 点击右下角的加号按钮可以发布微博，在输入框中输入 `delete id` 可以删除指定 id 的微博，微博的 id 可以在对应卡片的右下角找到。
